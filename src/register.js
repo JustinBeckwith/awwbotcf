@@ -1,5 +1,6 @@
-import { AWW_COMMAND, INVITE_COMMAND } from './commands.js';
+import { AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND } from './commands.js';
 import fetch from 'node-fetch';
+import 'dotenv/config';
 
 /**
  * This file is meant to be run from the command line, and is not used by the
@@ -33,13 +34,13 @@ async function registerGuildCommands() {
       'The DISCORD_TEST_GUILD_ID environment variable is required.'
     );
   }
-  const url = `https://discord.com/api/v8/applications/${applicationId}/guilds/${testGuildId}/commands`;
+  const url = `https://discord.com/api/v10/applications/${applicationId}/guilds/${testGuildId}/commands`;
   const res = await registerCommands(url);
   const json = await res.json();
   console.log(json);
   json.forEach(async (cmd) => {
     const response = await fetch(
-      `https://discord.com/api/v8/applications/${applicationId}/guilds/${testGuildId}/commands/${cmd.id}`
+      `https://discord.com/api/v10/applications/${applicationId}/guilds/${testGuildId}/commands/${cmd.id}`
     );
     if (!response.ok) {
       console.error(`Problem removing command ${cmd.id}`);
@@ -53,7 +54,7 @@ async function registerGuildCommands() {
  */
 // eslint-disable-next-line no-unused-vars
 async function registerGlobalCommands() {
-  const url = `https://discord.com/api/v8/applications/${applicationId}/commands`;
+  const url = `https://discord.com/api/v10/applications/${applicationId}/commands`;
   await registerCommands(url);
 }
 
@@ -64,7 +65,7 @@ async function registerCommands(url) {
       Authorization: `Bot ${token}`,
     },
     method: 'PUT',
-    body: JSON.stringify([AWW_COMMAND, INVITE_COMMAND]),
+    body: JSON.stringify([AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND]),
   });
 
   if (response.ok) {
@@ -77,5 +78,5 @@ async function registerCommands(url) {
   return response;
 }
 
-await registerGlobalCommands();
-// await registerGuildCommands();
+// await registerGlobalCommands();
+await registerGuildCommands();

@@ -12,3 +12,8 @@ export const INVITE_COMMAND = {
   name: 'invite',
   description: 'Get an invite link to add the bot to your server',
 };
+
+export const HELLO_WORLD_COMMAND = {
+  name: "hello",
+  description: "Get hello world using HTTPS Request"
+}

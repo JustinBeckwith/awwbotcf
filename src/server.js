@@ -8,7 +8,7 @@ import {
   InteractionType,
   verifyKey,
 } from 'discord-interactions';
-import { AWW_COMMAND, INVITE_COMMAND } from './commands.js';
+import { AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND } from './commands.js';
 import { getCuteUrl } from './reddit.js';
 
 class JsonResponse extends Response {
@@ -64,7 +64,7 @@ router.post('/', async (request, env) => {
       }
       case INVITE_COMMAND.name.toLowerCase(): {
         const applicationId = env.DISCORD_APPLICATION_ID;
-        const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
+        const INVITE_URL = `[Click here to invite the bot](https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands)`;
         return new JsonResponse({
           type: 4,
           data: {
@@ -72,6 +72,14 @@ router.post('/', async (request, env) => {
             flags: 64,
           },
         });
+      }
+      case HELLO_WORLD_COMMAND.name.toLowerCase(): {
+        return new JsonResponse({
+          type: 4,
+          data: {
+            content: "👋 Hey i'm using HTTPS request for sending this message using interactions"
+          }
+        })
       }
       default:
         console.error('Unknown Command');
