@@ -1,4 +1,4 @@
-import { AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND } from './commands.js';
+import { AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND, JOKE } from './commands.js';
 import fetch from 'node-fetch';
 import 'dotenv/config';
 
@@ -65,7 +65,7 @@ async function registerCommands(url) {
       Authorization: `Bot ${token}`,
     },
     method: 'PUT',
-    body: JSON.stringify([AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND]),
+    body: JSON.stringify([AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND, JOKE]),
   });
 
   if (response.ok) {

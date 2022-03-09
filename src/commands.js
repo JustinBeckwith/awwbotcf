@@ -16,4 +16,9 @@ export const INVITE_COMMAND = {
 export const HELLO_WORLD_COMMAND = {
   name: "hello",
   description: "Get hello world using HTTPS Request"
+};
+
+export const JOKE = {
+  name: "joke",
+  description: "Get random joke."
 }

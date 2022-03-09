@@ -8,8 +8,9 @@ import {
   InteractionType,
   verifyKey,
 } from 'discord-interactions';
-import { AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND } from './commands.js';
+import { AWW_COMMAND, INVITE_COMMAND, HELLO_WORLD_COMMAND, JOKE } from './commands.js';
 import { getCuteUrl } from './reddit.js';
+import { getRandomJoke } from './joke.js';
 
 class JsonResponse extends Response {
   constructor(body, init) {
@@ -78,6 +79,15 @@ router.post('/', async (request, env) => {
           type: 4,
           data: {
             content: "👋 Hey i'm using HTTPS request for sending this message using interactions"
+          }
+        })
+      }
+      case JOKE.name.toLowerCase(): {
+        const joke = await getRandomJoke();
+        return new JsonResponse({
+          type: 4,
+          data: {
+            content: joke
           }
         })
       }
