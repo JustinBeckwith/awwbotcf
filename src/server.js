@@ -29,7 +29,7 @@ const router = Router();
  * A simple :wave: hello page to verify the worker is working.
  */
 router.get('/', (request, env) => {
-  return new Response(`👋 ${env.DISCORD_APPLICATION_ID}`);
+  return new Response(`👋 ${env.DISCORD_APPLICATION_ID} use this endpoint to keep bot alive.`);
 });
 
 /**
