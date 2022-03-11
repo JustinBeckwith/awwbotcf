@@ -6,9 +6,9 @@
 
 ## How it works
 
-When you create a Bot on Discord, you can receive common events from the client as [webhooks](https://discord.com/developers/docs/resources/webhook). Discord will call a pre-configured HTTPS endpoint, and send details on the event in the JSON payload.
+When you create a bot on Discord, you can receive common events from the client as [webhooks](https://discord.com/developers/docs/resources/webhook). Discord will call a pre-configured HTTPS endpoint, and send details on the event in a JSON payload.
 
-This bot is an example of writing a webhook based bot which:
+This guide walks through creating a webhook-based bot which:
 
 - Uses the [Discord Interactions API](https://discord.com/developers/docs/interactions/receiving-and-responding)
 - Uses [Cloudflare Workers](https://workers.cloudflare.com/) for hosting
@@ -16,7 +16,7 @@ This bot is an example of writing a webhook based bot which:
 
 ## Creating bot on Discord
 
-To start, we're going to create the application and bot on the Discord Developer Dashboard:
+To start, we'll create the bot through the [Discord Developer Dashboard](https://discord.com/developers/applications):
 
 - Visit https://discord.com/developers/applications
 - Click `New Application`, and choose a name
@@ -25,10 +25,19 @@ To start, we're going to create the application and bot on the Discord Developer
 ![awwbot-ids](https://user-images.githubusercontent.com/534619/157505267-a361a871-e06f-4e3e-876f-cf401908dd49.png)
 
 - Click on the `Bot` tab, and create a bot! Choose the same name as your app.
-- Grab the token for your bot, and keep it somewhere safe locally (I like to put these tokens in [1password](https://1password.com/))
+- Grab the `token` for your bot, and store it somewhere safe (I like to put these tokens in a password manager like [1password](https://1password.com/) or [lastpass](https://www.lastpass.com/)).
+> 🔐 For security reasons, you can only view your bot token once. If you misplace your token, you'll have to generate a new one.
+
+## Adding bot permissions
+
+Now we'll configure the bot with [permissions](https://discord.com/developers/docs/topics/permissions) required to create and use slash commands, as well as send messages in  channels.
+
 - Click on the `OAuth2` tab, and choose the `URL Generator`. Click the `bot` and `applications.commands` scopes.
-- Click on the `Send Messages` and `Use Slash Commands` Bot Permissions
-- Copy the Generated URL, and paste it into the browser. Select the server where you'd like to develop your bot.
+- Check the boxes next to `Send Messages` and `Use Slash Commands`, then copy the `Generated URL`.
+
+<img width="500px" alt="awwbot permissions" src="https://user-images.githubusercontent.com/3411005/157953123-cf3d69f2-a353-4cc1-a1b9-2c299d57389d.png">
+
+- Paste the URL into the browser and follow the OAuth flow, selecting the server where you'd like to develop and test your bot.
 
 ## Creating your Cloudflare worker
 
@@ -46,6 +55,15 @@ The production service needs access to some of the information we saved earlier.
 $ wrangler secret put DISCORD_TOKEN
 $ wrangler secret put DISCORD_PUBLIC_KEY
 $ wrangler secret put DISCORD_APPLICATION_ID
+```
+
+You'll also need the Guild ID for the server where your app is installed. This can be found in the URL when you visit any channel in that server.
+
+> For example, if my URL was `https://discord.com/channels/123456/789101112`, the Guild ID is the first number—in this case **`123456`**.
+
+Once you know your Guild ID, set that variable as well:
+
+```
 $ wrangler secret put DISCORD_TEST_GUILD_ID
 ```
 
@@ -73,7 +91,9 @@ export const INVITE_COMMAND = {
 };
 ```
 
-The code to register our commands lives in `register.js`. Commands can be registered globally, making them available for all servers with the bot installed, or they can be registered to a single server. In this example - we're just going to focus on global commands:
+The code to register commands lives in `register.js`. Commands can be [registered globally](https://discord.com/developers/docs/interactions/application-commands#create-global-application-command), making them available for all servers with the bot installed, or they can be [registered on a single server](https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command).
+
+In this example - we'll just focus on global commands:
 
 ```js
 import { AWW_COMMAND, INVITE_COMMAND } from './commands.js';
@@ -141,7 +161,7 @@ We're finally ready to run this code locally! Let's start by running our local d
 $ npm run dev
 ```
 
-When a user types a slash command, Discord will send an HTTP request to a given endpoint. During local development this can be a little challenging, so we're going to use a tool called `ngrok` to create an HTTP tunnel.
+When a user types a slash command, Discord will send an HTTP request to a public endpoint. During local development this can be a little challenging, so we're going to use [a tool called `ngrok`](https://ngrok.com/) to create an HTTP tunnel.
 
 ```
 $ npm run ngrok
@@ -149,15 +169,21 @@ $ npm run ngrok
 
 ![forwardin](https://user-images.githubusercontent.com/534619/157511497-19c8cef7-c349-40ec-a9d3-4bc0147909b0.png)
 
-This is going to bounce requests off of an external endpoint, and foward them to your machine. Copy the HTTPS link provided by the tool. It should look something like `https://8098-24-22-245-250.ngrok.io`. Now head back to the Discord Developer Dashboard, and update the "Interactions Endpoint URL" for your bot:
+This is going to bounce requests off of an external endpoint, and foward them to your machine. Copy the HTTPS link provided by the tool. It should look something like `https://8098-24-22-245-250.ngrok.io`.
+
+Now head back to the Discord Developer Dashboard, and update the `Interactions Endpoint URL` for your bot:
 
 ![interactions-endpoint](https://user-images.githubusercontent.com/534619/157510959-6cf0327a-052a-432c-855b-c662824f15ce.png)
 
-This is the process we'll use for local testing and development. When you've published your bot to Cloudflare, you will _want to update this field to use your Cloudflare Worker URL._
+This is the process we'll use for local testing and development. When you've published your bot to Cloudflare, you will **want to update this field to use your Cloudflare Worker URL.**
 
 ## Deployment
 
-This repository is set up to automatically deploy to Cloudflare Workers when new changes land on the `main` branch. To deploy manually, run `npm run publish`, which uses the `wrangler publish` command under the hood. Publishing via a GitHub Action requires obtaining an [API Token and your Account ID from Cloudflare](https://developers.cloudflare.com/workers/cli-wrangler/authentication/). These are stored [as secrets in the GitHub repository](https://docs.github.com/en/actions/security-guides/encrypted-secrets), making them available to GitHub Actions. The following configuration in `.github/workflows/ci.yaml` demonstrates how to tie it all together:
+This repository is set up to automatically deploy to Cloudflare Workers when new changes land on the `main` branch. To deploy manually, run `npm run publish`, which uses the `wrangler publish` command under the hood.
+
+Publishing via a GitHub Action requires obtaining an [API Token and your Account ID from Cloudflare](https://developers.cloudflare.com/workers/cli-wrangler/authentication/). These are stored [as secrets in the GitHub repository](https://docs.github.com/en/actions/security-guides/encrypted-secrets), making them available to GitHub Actions.
+
+The following configuration in `.github/workflows/ci.yaml` demonstrates how to tie it all together:
 
 ```yaml
 release:
