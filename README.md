@@ -35,7 +35,8 @@ Now we'll configure the bot with [permissions](https://discord.com/developers/do
 - Click on the `OAuth2` tab, and choose the `URL Generator`. Click the `bot` and `applications.commands` scopes.
 - Check the boxes next to `Send Messages` and `Use Slash Commands`, then copy the `Generated URL`.
 
-img~
+<img width="500px" src="https://user-images.githubusercontent.com/3411005/157953123-cf3d69f2-a353-4cc1-a1b9-2c299d57389d.png">
+
 
 - Paste the URL into the browser and follow the OAuth flow, selecting the server where you'd like to develop and test your bot.
 
