@@ -25,7 +25,8 @@ To start, we're going to create the application and bot on the Discord Developer
 ![awwbot-ids](https://user-images.githubusercontent.com/534619/157505267-a361a871-e06f-4e3e-876f-cf401908dd49.png)
 
 - Click on the `Bot` tab, and create a bot! Choose the same name as your app.
-- Grab the token for your bot, and keep it somewhere safe locally (I like to put these tokens in [1password](https://1password.com/))
+- Grab the `token` for your bot, and store it somewhere safe (I like to put these tokens in a password manager like [1password](https://1password.com/) or [lastpass](https://www.lastpass.com/)).
+> Due to security concerns, you can only view your bot token once. If you misplace your token, you'll have to generate a new one.
 - Click on the `OAuth2` tab, and choose the `URL Generator`. Click the `bot` and `applications.commands` scopes.
 - Click on the `Send Messages` and `Use Slash Commands` Bot Permissions
 - Copy the Generated URL, and paste it into the browser. Select the server where you'd like to develop your bot.
