@@ -26,10 +26,18 @@ To start, we're going to create the application and bot on the Discord Developer
 
 - Click on the `Bot` tab, and create a bot! Choose the same name as your app.
 - Grab the `token` for your bot, and store it somewhere safe (I like to put these tokens in a password manager like [1password](https://1password.com/) or [lastpass](https://www.lastpass.com/)).
-> Due to security concerns, you can only view your bot token once. If you misplace your token, you'll have to generate a new one.
+> 🔐 For security reasons, you can only view your bot token once. If you misplace your token, you'll have to generate a new one.
+
+## Adding bot permissions
+
+Now we'll configure the bot with [permissions](https://discord.com/developers/docs/topics/permissions) required to create and use slash commands, as well as send messages in  channels.
+
 - Click on the `OAuth2` tab, and choose the `URL Generator`. Click the `bot` and `applications.commands` scopes.
-- Click on the `Send Messages` and `Use Slash Commands` Bot Permissions
-- Copy the Generated URL, and paste it into the browser. Select the server where you'd like to develop your bot.
+- Check the boxes next to `Send Messages` and `Use Slash Commands`, then copy the `Generated URL`.
+
+img~
+
+- Paste the URL into the browser and follow the OAuth flow, selecting the server where you'd like to develop and test your bot.
 
 ## Creating your Cloudflare worker
 
@@ -74,7 +82,9 @@ export const INVITE_COMMAND = {
 };
 ```
 
-The code to register our commands lives in `register.js`. Commands can be registered globally, making them available for all servers with the bot installed, or they can be registered to a single server. In this example - we're just going to focus on global commands:
+The code to register our commands lives in `register.js`. Commands can be [registered globally](https://discord.com/developers/docs/interactions/application-commands#create-global-application-command), making them available for all servers with the bot installed, or they can be [registered to a single server](https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command).
+
+In this example - we're just going to focus on global commands:
 
 ```js
 import { AWW_COMMAND, INVITE_COMMAND } from './commands.js';
