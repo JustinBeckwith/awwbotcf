@@ -23,6 +23,11 @@ jobs:
           node-version: 16
       - run: npm install
       - run: npm run lint
+  linkinator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: JustinBeckwith/linkinator-action@v1
   release:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
