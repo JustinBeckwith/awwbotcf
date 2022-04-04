@@ -4,6 +4,7 @@
 
 import { Router } from 'itty-router';
 import {
+  InteractionResponseFlags,
   InteractionResponseType,
   InteractionType,
   verifyKey,
@@ -56,7 +57,7 @@ router.post('/', async (request, env) => {
         console.log('handling cute request');
         const cuteUrl = await getCuteUrl();
         return new JsonResponse({
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: cuteUrl,
           },
@@ -66,10 +67,10 @@ router.post('/', async (request, env) => {
         const applicationId = env.DISCORD_APPLICATION_ID;
         const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
         return new JsonResponse({
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: INVITE_URL,
-            flags: 64,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         });
       }
@@ -97,7 +98,6 @@ export default {
       // Using the incoming headers, verify this request actually came from discord.
       const signature = request.headers.get('x-signature-ed25519');
       const timestamp = request.headers.get('x-signature-timestamp');
-      console.log(signature, timestamp, env.DISCORD_PUBLIC_KEY);
       const body = await request.clone().arrayBuffer();
       const isValidRequest = verifyKey(
         body,

@@ -266,7 +266,7 @@ router.post('/', async (request, env) => {
         console.log('handling cute request');
         const cuteUrl = await getCuteUrl();
         return new JsonResponse({
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: cuteUrl,
           },
@@ -276,10 +276,10 @@ router.post('/', async (request, env) => {
         const applicationId = env.DISCORD_APPLICATION_ID;
         const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
         return new JsonResponse({
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: INVITE_URL,
-            flags: 64,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         });
       }
